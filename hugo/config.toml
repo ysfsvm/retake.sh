@@ -1,4 +1,4 @@
-baseurl = "https://retake.sh/"
+baseurl = "/"
 languageCode = "tr-tr"
 theme = "hugo-theme-retake-sh"
 
