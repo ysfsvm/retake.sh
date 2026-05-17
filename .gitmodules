@@ -1,0 +1,3 @@
+[submodule "hugo/themes/hugo-theme-retake-sh"]
+	path = hugo/themes/hugo-theme-retake-sh
+	url = https://github.com/ysfsvm/hugo-theme-retake-sh
