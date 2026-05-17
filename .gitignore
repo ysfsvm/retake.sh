@@ -1,0 +1,12 @@
+# Generated files
+hugo/public/
+hugo/resources/_gen/
+hugo/.hugo_build.lock
+
+# Hosting
+hosting/.env
+hosting/backups/
+
+# OS generated shit files
+.DS_Store
+Thumbs.db

@@ -1,0 +1,72 @@
+services:
+  umami-db:
+    image: postgres:15-alpine
+    container_name: umami-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: umami
+      POSTGRES_USER: umami
+      POSTGRES_PASSWORD: ${UMAMI_DB_PASSWORD}
+    volumes:
+      - umami-db-data:/var/lib/postgresql/data
+    networks:
+      - traefik-net
+
+  umami:
+    image: ghcr.io/umami-software/umami:postgresql-latest
+    container_name: umami
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://umami:${UMAMI_DB_PASSWORD}@umami-db:5432/umami
+      DATABASE_TYPE: postgresql
+      APP_SECRET: ${UMAMI_APP_SECRET}
+    depends_on:
+      - umami-db
+    networks:
+      - traefik-net
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=traefik-net
+      - traefik.http.routers.umami.rule=Host(`${UMAMI_DOMAIN:-analytics.retake.sh}`)
+      - traefik.http.routers.umami.entrypoints=https
+      - traefik.http.routers.umami.tls=true
+      - traefik.http.routers.umami.tls.certresolver=cloudflare
+      - traefik.http.services.umami.loadbalancer.server.port=3000
+  hugo-build:
+    image: hugomods/hugo:latest
+    container_name: hugo-build
+    command: hugo --gc --minify --cleanDestinationDir --destination=/target
+    volumes:
+      - ../hugo:/src
+      - ../hugo/public:/target
+    environment:
+      - HUGO_ENV=production
+      - HUGO_BASEURL=https://retake.sh
+    restart: "no"
+
+  hugo-serve:
+    image: nginx:alpine
+    container_name: hugo-serve
+    restart: unless-stopped
+    volumes:
+      - ../hugo/public:/usr/share/nginx/html:ro
+    networks:
+      - traefik-net
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=traefik-net
+      - traefik.http.routers.hugo.rule=Host(`retake.sh`)
+      - traefik.http.routers.hugo.entrypoints=https
+      - traefik.http.routers.hugo.tls=true
+      - traefik.http.routers.hugo.tls.certresolver=cloudflare
+      - traefik.http.services.hugo.loadbalancer.server.port=80
+    depends_on:
+      - hugo-build
+
+networks:
+  traefik-net:
+    external: true
+
+volumes:
+  umami-db-data:
+    name: umami-db-data

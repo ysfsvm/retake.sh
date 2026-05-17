@@ -1,0 +1,42 @@
+baseurl = "https://retake.sh/"
+languageCode = "tr-tr"
+theme = "hugo-theme-retake-sh"
+
+[markup.goldmark.renderer]
+  unsafe = true
+
+[markup.highlight]
+  noClasses = false
+
+[params]
+  contentTypeName = "posts"
+  showMenuItems = 6
+  fullWidthTheme = false
+  centerTheme = true
+  Toc = true
+  readingTime = true
+  Author = false
+
+[languages]
+  [languages.en]
+    title = "retake.sh"
+    subtitle = "Blogum"
+    keywords = ""
+    copyright = "<span style='color: var(--accent);'>retake</span> :: Hayat kaosla dans etme sanatıdır"
+    menuMore = "Diğerlerini Göster"
+    readMore = "Daha fazla oku"
+    readOtherPosts = "Daha Daha fazla Oku"
+
+    [languages.en.params.logo]
+      logoText = "retake.sh"
+      logoHomeLink = "/"
+
+    [languages.en.menu]
+      [[languages.en.menu.main]]
+        identifier = "whoami"
+        name = "/whoami"
+        url = "/whoami"
+      [[languages.en.menu.main]]
+        identifier = "journal"
+        name = "/journal"
+        url = "/journal"
